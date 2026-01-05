@@ -17,11 +17,49 @@ interface Product {
   volume?: string;
   sale?: boolean;
   salePrice?: number;
+  colorShade?: string;
+}
+
+interface ColorShade {
+  id: string;
+  name: string;
+  code: string;
+  hex: string;
+  category: string;
+  brand: string;
 }
 
 interface CartItem extends Product {
   quantity: number;
 }
+
+const colorShades: ColorShade[] = [
+  { id: '1.0', name: 'Черный', code: '1.0', hex: '#1a1a1a', category: 'Натуральные', brand: 'BBcos' },
+  { id: '2.0', name: 'Темно-коричневый', code: '2.0', hex: '#2d1f1a', category: 'Натуральные', brand: 'BBcos' },
+  { id: '3.0', name: 'Темно-каштановый', code: '3.0', hex: '#3d2a1f', category: 'Натуральные', brand: 'BBcos' },
+  { id: '4.0', name: 'Каштановый', code: '4.0', hex: '#5c3d2e', category: 'Натуральные', brand: 'BBcos' },
+  { id: '5.0', name: 'Светло-каштановый', code: '5.0', hex: '#7a5547', category: 'Натуральные', brand: 'BBcos' },
+  { id: '6.0', name: 'Темно-русый', code: '6.0', hex: '#8b6f5c', category: 'Натуральные', brand: 'BBcos' },
+  { id: '7.0', name: 'Русый', code: '7.0', hex: '#a4866f', category: 'Натуральные', brand: 'BBcos' },
+  { id: '8.0', name: 'Светло-русый', code: '8.0', hex: '#c3a892', category: 'Натуральные', brand: 'BBcos' },
+  { id: '9.0', name: 'Очень светло-русый', code: '9.0', hex: '#dcc5ad', category: 'Натуральные', brand: 'BBcos' },
+  { id: '10.0', name: 'Платиновый блонд', code: '10.0', hex: '#f0dfc8', category: 'Натуральные', brand: 'BBcos' },
+  { id: '6.3', name: 'Темно-русый золотистый', code: '6.3', hex: '#a67c4f', category: 'Золотистые', brand: 'BBcos' },
+  { id: '7.3', name: 'Русый золотистый', code: '7.3', hex: '#c8995e', category: 'Золотистые', brand: 'BBcos' },
+  { id: '8.3', name: 'Светло-русый золотистый', code: '8.3', hex: '#d9b482', category: 'Золотистые', brand: 'BBcos' },
+  { id: '9.3', name: 'Блонд золотистый', code: '9.3', hex: '#e8ca9f', category: 'Золотистые', brand: 'BBcos' },
+  { id: '6.4', name: 'Темно-русый медный', code: '6.4', hex: '#9d5a3c', category: 'Медные', brand: 'BBcos' },
+  { id: '7.4', name: 'Русый медный', code: '7.4', hex: '#b5704e', category: 'Медные', brand: 'BBcos' },
+  { id: '8.4', name: 'Светло-русый медный', code: '8.4', hex: '#c88860', category: 'Медные', brand: 'BBcos' },
+  { id: '6.5', name: 'Темно-русый махагон', code: '6.5', hex: '#7a3d3d', category: 'Красные', brand: 'BBcos' },
+  { id: '7.5', name: 'Русый махагон', code: '7.5', hex: '#925454', category: 'Красные', brand: 'BBcos' },
+  { id: '6.6', name: 'Темно-русый красный', code: '6.6', hex: '#8b3333', category: 'Красные', brand: 'BBcos' },
+  { id: '7.6', name: 'Русый красный', code: '7.6', hex: '#a04747', category: 'Красные', brand: 'BBcos' },
+  { id: '6.1', name: 'Темно-русый пепельный', code: '6.1', hex: '#6d6963', category: 'Пепельные', brand: 'BBcos' },
+  { id: '7.1', name: 'Русый пепельный', code: '7.1', hex: '#857f77', category: 'Пепельные', brand: 'BBcos' },
+  { id: '8.1', name: 'Светло-русый пепельный', code: '8.1', hex: '#a39d94', category: 'Пепельные', brand: 'BBcos' },
+  { id: '9.1', name: 'Блонд пепельный', code: '9.1', hex: '#bdb8ae', category: 'Пепельные', brand: 'BBcos' }
+];
 
 const products: Product[] = [
   {
@@ -81,6 +119,24 @@ const products: Product[] = [
     image: 'https://cdn.poehali.dev/projects/60b31cd1-0092-4c8c-8229-37090acd3fe8/files/98f15a3a-f43a-4998-b399-1c7e51f4e5fc.jpg',
     category: 'Окрашивание',
     volume: '100 мл'
+  },
+  {
+    id: 7,
+    name: 'New.Fix Лак для волос сильной фиксации',
+    brand: 'BBcos',
+    price: 1250,
+    image: 'https://cdn.poehali.dev/projects/60b31cd1-0092-4c8c-8229-37090acd3fe8/files/655ad01c-2875-427b-b4f0-adba57c4f500.jpg',
+    category: 'Стайлинг',
+    volume: '400 мл'
+  },
+  {
+    id: 8,
+    name: 'KristalE Масло для блеска волос',
+    brand: 'BBcos',
+    price: 1890,
+    image: 'https://cdn.poehali.dev/projects/60b31cd1-0092-4c8c-8229-37090acd3fe8/files/d2d44684-430d-443b-a33a-a596627b58f8.jpg',
+    category: 'Уход',
+    volume: '125 мл'
   }
 ];
 
@@ -88,7 +144,9 @@ export default function Index() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [activeSection, setActiveSection] = useState('home');
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedColorCategory, setSelectedColorCategory] = useState<string>('all');
 
   const addToCart = (product: Product) => {
     const existing = cart.find(item => item.id === product.id);
@@ -123,12 +181,20 @@ export default function Index() {
   }, 0);
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  const categories = ['all', 'Окрашивание', 'Осветление', 'Уход', 'Стайлинг'];
+  const colorCategories = ['all', 'Натуральные', 'Золотистые', 'Медные', 'Красные', 'Пепельные'];
+
   const filteredProducts = products.filter(product => {
     const matchesBrand = !selectedBrand || product.brand === selectedBrand;
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     const matchesSearch = !searchQuery || 
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.brand.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesBrand && matchesSearch;
+    return matchesBrand && matchesCategory && matchesSearch;
+  });
+
+  const filteredColors = colorShades.filter(color => {
+    return selectedColorCategory === 'all' || color.category === selectedColorCategory;
   });
 
   return (
@@ -174,6 +240,12 @@ export default function Index() {
                   className="text-sm hover:text-primary transition font-medium"
                 >
                   Обучение
+                </button>
+                <button 
+                  onClick={() => setActiveSection('palettes')}
+                  className="text-sm hover:text-primary transition font-medium"
+                >
+                  Палитры
                 </button>
               </nav>
             </div>
@@ -343,16 +415,20 @@ export default function Index() {
             </section>
 
             <section className="mb-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-3xl font-bold">Каталог товаров</h2>
-                <Tabs defaultValue="all" className="w-auto">
-                  <TabsList>
-                    <TabsTrigger value="all">Все</TabsTrigger>
-                    <TabsTrigger value="coloring">Окрашивание</TabsTrigger>
-                    <TabsTrigger value="care">Уход</TabsTrigger>
-                    <TabsTrigger value="sale">Распродажа</TabsTrigger>
-                  </TabsList>
-                </Tabs>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold mb-4">Каталог товаров</h2>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map(cat => (
+                    <Button
+                      key={cat}
+                      variant={selectedCategory === cat ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedCategory(cat)}
+                    >
+                      {cat === 'all' ? 'Все категории' : cat}
+                    </Button>
+                  ))}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -584,6 +660,102 @@ export default function Index() {
                   <Button size="lg">
                     Записаться на семинар
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeSection === 'palettes' && (
+          <div className="animate-fade-in">
+            <div className="text-center mb-8">
+              <h2 className="text-4xl font-bold mb-4">Палитры цветов BBcos</h2>
+              <p className="text-lg text-muted-foreground">
+                Полная палитра оттенков профессиональной краски для волос
+              </p>
+            </div>
+
+            <div className="mb-6">
+              <div className="flex flex-wrap gap-2 justify-center">
+                {colorCategories.map(cat => (
+                  <Button
+                    key={cat}
+                    variant={selectedColorCategory === cat ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedColorCategory(cat)}
+                  >
+                    {cat === 'all' ? 'Все оттенки' : cat}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {filteredColors.map((color, index) => (
+                <Card 
+                  key={color.id} 
+                  className="group hover:shadow-lg transition-all duration-300 animate-scale-in overflow-hidden"
+                  style={{ animationDelay: `${index * 30}ms` }}
+                >
+                  <div 
+                    className="h-32 transition-transform duration-300 group-hover:scale-105" 
+                    style={{ backgroundColor: color.hex }}
+                  />
+                  <CardContent className="p-3">
+                    <div className="text-center">
+                      <p className="font-bold text-sm mb-1">{color.code}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-2">{color.name}</p>
+                      <Badge variant="outline" className="mt-2 text-xs">
+                        {color.category}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <Card className="mt-12">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-4">О палитре BBcos Innovation EVO</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold mb-2">Особенности:</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-start gap-2">
+                        <Icon name="Check" size={16} className="text-primary mt-0.5" />
+                        <span>100% закрашивание седины</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Icon name="Check" size={16} className="text-primary mt-0.5" />
+                        <span>Стойкий насыщенный цвет</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Icon name="Check" size={16} className="text-primary mt-0.5" />
+                        <span>Мягкая кремовая текстура</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Icon name="Check" size={16} className="text-primary mt-0.5" />
+                        <span>Не течет при нанесении</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Применение:</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="flex items-start gap-2">
+                        <Icon name="Droplet" size={16} className="text-primary mt-0.5" />
+                        <span>Смешивание: 1:1.5 с оксидантом</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Icon name="Clock" size={16} className="text-primary mt-0.5" />
+                        <span>Время выдержки: 35-40 минут</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Icon name="Thermometer" size={16} className="text-primary mt-0.5" />
+                        <span>Температура: комнатная</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </CardContent>
             </Card>

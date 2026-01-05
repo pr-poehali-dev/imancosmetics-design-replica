@@ -18,6 +18,9 @@ interface Product {
   sale?: boolean;
   salePrice?: number;
   colorShade?: string;
+  description?: string;
+  features?: string[];
+  usage?: string;
 }
 
 interface ColorShade {
@@ -69,7 +72,10 @@ const products: Product[] = [
     price: 1850,
     image: 'https://cdn.poehali.dev/projects/60b31cd1-0092-4c8c-8229-37090acd3fe8/files/655ad01c-2875-427b-b4f0-adba57c4f500.jpg',
     category: 'Окрашивание',
-    volume: '100 мл'
+    volume: '100 мл',
+    description: 'Концентрированные пигменты прямого действия для создания ярких и пастельных оттенков. Идеальны для техник балаяж, омбре и креативного окрашивания.',
+    features: ['Не требует смешивания с оксидантом', 'Яркие насыщенные цвета', 'Можно смешивать между собой', 'Работает на любом уровне тона'],
+    usage: 'Наносить на чистые влажные волосы. Время выдержки 20-30 минут. Смывать водой без шампуня.'
   },
   {
     id: 2,
@@ -78,7 +84,10 @@ const products: Product[] = [
     price: 420,
     image: 'https://cdn.poehali.dev/projects/60b31cd1-0092-4c8c-8229-37090acd3fe8/files/d2d44684-430d-443b-a33a-a596627b58f8.jpg',
     category: 'Окрашивание',
-    volume: '100 мл'
+    volume: '100 мл',
+    description: 'Профессиональная крем-краска нового поколения с системой защиты цвета. Обеспечивает 100% закрашивание седины и стойкий результат.',
+    features: ['100% закрашивание седины', 'Стойкий результат до 8 недель', 'Мягкая кремовая текстура', 'Без аммиака'],
+    usage: 'Смешать с оксидантом 1:1.5. Нанести на сухие волосы. Время выдержки 35-40 минут.'
   },
   {
     id: 3,
@@ -147,6 +156,27 @@ export default function Index() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedColorCategory, setSelectedColorCategory] = useState<string>('all');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isProductDetailOpen, setIsProductDetailOpen] = useState(false);
+
+  const downloadPalette = () => {
+    const paletteData = filteredColors.map(color => 
+      `${color.code} - ${color.name} (${color.category})`
+    ).join('\n');
+    
+    const blob = new Blob([`ПАЛИТРА ЦВЕТОВ BBcos Innovation EVO\n\n${paletteData}\n\nОфициальный дистрибьютор: IMAN Cosmetics`], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'bbcos-palette.txt';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const openProductDetail = (product: Product) => {
+    setSelectedProduct(product);
+    setIsProductDetailOpen(true);
+  };
 
   const addToCart = (product: Product) => {
     const existing = cart.find(item => item.id === product.id);
@@ -457,11 +487,16 @@ export default function Index() {
                       </div>
                       <CardContent className="p-4">
                         <p className="text-xs text-muted-foreground mb-1">{product.category}</p>
-                        <h3 className="font-semibold text-sm mb-2 line-clamp-2 min-h-[40px]">{product.name}</h3>
+                        <h3 
+                          className="font-semibold text-sm mb-2 line-clamp-2 min-h-[40px] cursor-pointer hover:text-primary transition"
+                          onClick={() => openProductDetail(product)}
+                        >
+                          {product.name}
+                        </h3>
                         {product.volume && (
                           <p className="text-xs text-muted-foreground mb-3">{product.volume}</p>
                         )}
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between mb-3">
                           <div>
                             {product.sale && product.salePrice ? (
                               <div>
@@ -473,14 +508,23 @@ export default function Index() {
                             )}
                           </div>
                         </div>
-                        <Button 
-                          onClick={() => addToCart(product)}
-                          className="w-full mt-3"
-                          size="sm"
-                        >
-                          <Icon name="ShoppingCart" size={14} className="mr-2" />
-                          В корзину
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => addToCart(product)}
+                            className="flex-1"
+                            size="sm"
+                          >
+                            <Icon name="ShoppingCart" size={14} className="mr-2" />
+                            В корзину
+                          </Button>
+                          <Button 
+                            onClick={() => openProductDetail(product)}
+                            variant="outline"
+                            size="sm"
+                          >
+                            <Icon name="Eye" size={14} />
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   );
@@ -670,9 +714,13 @@ export default function Index() {
           <div className="animate-fade-in">
             <div className="text-center mb-8">
               <h2 className="text-4xl font-bold mb-4">Палитры цветов BBcos</h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-lg text-muted-foreground mb-4">
                 Полная палитра оттенков профессиональной краски для волос
               </p>
+              <Button onClick={downloadPalette} size="lg">
+                <Icon name="Download" size={18} className="mr-2" />
+                Скачать палитру
+              </Button>
             </div>
 
             <div className="mb-6">
@@ -762,6 +810,105 @@ export default function Index() {
           </div>
         )}
       </main>
+
+      <Sheet open={isProductDetailOpen} onOpenChange={setIsProductDetailOpen}>
+        <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
+          {selectedProduct && (
+            <>
+              <SheetHeader>
+                <SheetTitle className="text-2xl">{selectedProduct.name}</SheetTitle>
+              </SheetHeader>
+              <div className="mt-6 space-y-6">
+                <div className="relative h-80 rounded-lg overflow-hidden">
+                  <img 
+                    src={selectedProduct.image} 
+                    alt={selectedProduct.name}
+                    className="w-full h-full object-cover"
+                  />
+                  {selectedProduct.sale && (
+                    <Badge className="absolute top-4 right-4 bg-destructive text-lg px-3 py-1">
+                      Скидка
+                    </Badge>
+                  )}
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <Badge variant="outline" className="mb-2">{selectedProduct.brand}</Badge>
+                      <p className="text-sm text-muted-foreground">{selectedProduct.category}</p>
+                      {selectedProduct.volume && (
+                        <p className="text-sm text-muted-foreground mt-1">Объем: {selectedProduct.volume}</p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      {selectedProduct.sale && selectedProduct.salePrice ? (
+                        <div>
+                          <span className="text-3xl font-bold text-primary block">{selectedProduct.salePrice} ₽</span>
+                          <span className="text-lg text-muted-foreground line-through">{selectedProduct.price} ₽</span>
+                        </div>
+                      ) : (
+                        <span className="text-3xl font-bold text-primary">{selectedProduct.price} ₽</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {selectedProduct.description && (
+                    <div className="mb-6">
+                      <h3 className="font-bold text-lg mb-2">Описание</h3>
+                      <p className="text-muted-foreground leading-relaxed">{selectedProduct.description}</p>
+                    </div>
+                  )}
+
+                  {selectedProduct.features && selectedProduct.features.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="font-bold text-lg mb-3">Особенности</h3>
+                      <ul className="space-y-2">
+                        {selectedProduct.features.map((feature, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <Icon name="Check" size={20} className="text-primary mt-0.5 flex-shrink-0" />
+                            <span className="text-muted-foreground">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {selectedProduct.usage && (
+                    <div className="mb-6 p-4 bg-muted rounded-lg">
+                      <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
+                        <Icon name="Info" size={20} className="text-primary" />
+                        Применение
+                      </h3>
+                      <p className="text-muted-foreground">{selectedProduct.usage}</p>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <Button 
+                      onClick={() => {
+                        addToCart(selectedProduct);
+                        setIsProductDetailOpen(false);
+                      }}
+                      size="lg"
+                      className="flex-1"
+                    >
+                      <Icon name="ShoppingCart" size={18} className="mr-2" />
+                      Добавить в корзину
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      size="lg"
+                    >
+                      <Icon name="Heart" size={18} />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
 
       <footer className="bg-card border-t mt-16">
         <div className="container mx-auto px-4 py-12">
